@@ -1,0 +1,14 @@
+# OSX files
+.DS_Store
+
+# IDE folders
+.vscode
+.idea
+.ijwb
+
+# Bazel
+bazel-*
+
+local
+
+.terraform*
