@@ -63,9 +63,9 @@ vault kv get -format=json nomad/nomad-ca | jq -r '.data.value' | sudo tee "$ROOT
 vault kv get -format=json nomad/nomad-ca-key | jq -r '.data.value' | sudo tee "$ROOT_FOLDER/nomad-ca-key.pem" >/dev/null
 for SECRET_PATH in ${SECRET}
 do
-  vault secrets enable -path=${SECRET_PATH} kv || true
+  vault secrets enable -path=$SECRET_PATH kv || true
   cat >> policy.hcl << EOF
-path "${SECRET_PATH}/*" {
+path "$SECRET_PATH/*" {
   capabilities = ["read"]
 }
 EOF
