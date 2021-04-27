@@ -61,12 +61,15 @@ export VAULT_CACERT=$ROOT_FOLDER/vault-ca.pem
 export VAULT_TOKEN=$(cat $ROOT_FOLDER/vault-token)
 vault kv get -format=json nomad/nomad-ca | jq -r '.data.value' | sudo tee "$ROOT_FOLDER/nomad-ca.pem" >/dev/null
 vault kv get -format=json nomad/nomad-ca-key | jq -r '.data.value' | sudo tee "$ROOT_FOLDER/nomad-ca-key.pem" >/dev/null
-vault secrets enable -path=${APPLICATION} kv || true
-cat > policy.hcl << EOF
-path "${APPLICATION}/*" {
+for SECRET_PATH in ${SECRET}
+do
+  vault secrets enable -path=${SECRET_PATH} kv || true
+  cat >> policy.hcl << EOF
+path "${SECRET_PATH}/*" {
   capabilities = ["read"]
 }
 EOF
+done
 vault policy write ${APPLICATION} policy.hcl || true
 
 cat > cfssl.json << EOF
