@@ -37,6 +37,14 @@ vault {
   address = "https://vault:8200"
   ca_file = "$ROOT_FOLDER/vault-ca.pem"
 }
+
+plugin "docker" {
+  config {
+    volumes {
+      enabled = true
+    }
+  }
+}
 EOF
 
 cat > /etc/systemd/system/nomad-client.service << EOF
