@@ -99,4 +99,5 @@ cfssl print-defaults csr | cfssl gencert -initca - | cfssljson -bare nomad-ca
 vault secrets enable -path=nomad kv
 vault kv put nomad/nomad-ca value=@nomad-ca.pem
 vault kv put nomad/nomad-ca-key value=@nomad-ca-key.pem
+vault secrets enable -path=dockerhub kv
 rm -f nomad-ca*
