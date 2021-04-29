@@ -98,3 +98,5 @@ sudo mv nomad-client-key.pem $ROOT_FOLDER/nomad-client-key.pem
 sudo systemctl daemon-reload
 sudo systemctl enable nomad-client.service
 sudo systemctl start nomad-client.service
+
+${EXTRA_SCRIPT}
