@@ -43,6 +43,9 @@ plugin "docker" {
     volumes {
       enabled = true
     }
+    auth {
+      config = "/root/.docker/config.json"
+    }
   }
 }
 EOF
@@ -98,5 +101,9 @@ sudo mv nomad-client-key.pem $ROOT_FOLDER/nomad-client-key.pem
 sudo systemctl daemon-reload
 sudo systemctl enable nomad-client.service
 sudo systemctl start nomad-client.service
+
+DOCKERHUB_USERNAME=$(vault kv get -format=json dockerhub/username | jq -r '.data.value')
+DOCKERHUB_PASSWORD=$(vault kv get -format=json dockerhub/password | jq -r '.data.value')
+sudo docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
 
 ${EXTRA_SCRIPT}
