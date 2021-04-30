@@ -26,7 +26,7 @@ Vault is used for storing passwords, ssl certificates and so on. This is used ac
 
 #### Operation
 
-To be able to communicate with the vault server, you will need vault related credentials set up. There's a shell script to set up the environment variable needed to communicate with the vault server.
+To be able to authenticate with the vault server and call vault commands locally, you will need vault related credentials set up. There's a shell script to set up the environment variable needed to communicate with the vault server.
 
 ```
 eval $(./authenticate-vault.sh)
@@ -55,7 +55,7 @@ Nomad runs contained applications on top. It contains one or more nomad server, 
 
 #### Operation
 
-To be able to communicate with nomad server, you will need nomad related credentials set up. There's a shell script to set up the environment variable needed to communicate with the nomad server.
+To be able to authenticate with the nomad server and call nomad commands locally, you will need nomad related credentials set up. There's a shell script to set up the environment variable needed to communicate with the nomad server.
 
 ```
 eval $(./authenticate-nomad.sh)
