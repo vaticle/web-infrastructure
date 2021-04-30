@@ -25,7 +25,7 @@ Vault is used for storing passwords, ssl certificates and so on. This is used ac
     Command to deploy cloud infrastructure:
     
     ```
-   cd vault && terraform plan && terraform apply
+   terraform plan && terraform apply
     ```
 
 #### Operation
