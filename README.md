@@ -12,8 +12,6 @@ Vault is used for storing passwords, ssl certificates and so on. This is used ac
 
 1. First we need to deploy the image, which will have the required tools pre-installed. The image only needs to be updated if we want to upgrade the installed software version.
 
-    Command to deploy a versioned image:
-    
     ```
    DEPLOY_PACKER_VERSION=(git rev-parse HEAD) bazel run //infrastructure/vault/images:deploy-gcp-vault
     ```
@@ -22,8 +20,6 @@ Vault is used for storing passwords, ssl certificates and so on. This is used ac
    
 2. We then need to deploy the cloud infrastructure of vault to GCP, after modifying the commit version of the image to use.
 
-    Command to deploy cloud infrastructure:
-    
     ```
    terraform plan && terraform apply
     ```
@@ -31,8 +27,6 @@ Vault is used for storing passwords, ssl certificates and so on. This is used ac
 #### Operation
 
 To be able to communicate with the vault server, you will need vault related credentials set up. There's a shell script to set up the environment variable needed to communicate with the vault server.
-
-Command to authenticate your local shell:
 
 ```
 eval $(./authenticate-vault.sh)
@@ -46,8 +40,6 @@ Nomad runs contained applications on top. It contains one or more nomad server, 
 
 1. First we need to deploy the image, which will have the required tools pre-installed. The image only needs to be updated if we want to upgrade the installed software version.
 
-    Command to deploy a versioned image:
-    
     ```
    DEPLOY_PACKER_VERSION=(git rev-parse HEAD) bazel run //infrastructure/nomad/images:deploy-gcp-nomad-server
    DEPLOY_PACKER_VERSION=(git rev-parse HEAD) bazel run //infrastructure/nomad/images:deploy-gcp-nomad-client
@@ -57,8 +49,6 @@ Nomad runs contained applications on top. It contains one or more nomad server, 
    
 2. We then need to deploy the cloud infrastructure of nomad server to GCP, after modifying the commit version of the image to use. We don't need to deploy nomad clients yet, as that depends on what and how many applications we want to run as nomad applications.
 
-    Command to deploy cloud infrastructure:
-    
     ```
    terraform plan && terraform apply
     ```
@@ -66,8 +56,6 @@ Nomad runs contained applications on top. It contains one or more nomad server, 
 #### Operation
 
 To be able to communicate with nomad server, you will need nomad related credentials set up. There's a shell script to set up the environment variable needed to communicate with the nomad server.
-
-Command to authenticate your local shell:
 
 ```
 eval $(./authenticate-nomad.sh)
