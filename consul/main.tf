@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket  = "vaticle-web-prod-terraform-state"
-    prefix  = "terraform/consul"
+    prefix  = "terraform/consul/server"
   }
 }
 
@@ -11,8 +11,8 @@ provider "google" {
   zone    = "europe-west2-b"
 }
 
-resource "google_compute_firewall" "consul_api_firewall" {
-  name    = "consul-api-firewall"
+resource "google_compute_firewall" "consul_server_api_firewall" {
+  name    = "consul-server-api-firewall"
   network = "default"
 
   allow {
@@ -20,20 +20,20 @@ resource "google_compute_firewall" "consul_api_firewall" {
     ports    = ["8300"]
   }
 
-  target_tags = ["consul"]
+  target_tags = ["consul-server"]
 }
 
-resource "google_compute_address" "consul_static_ip" {
-  name = "consul-static-ip"
+resource "google_compute_address" "consul_server_static_ip" {
+  name = "consul-server-static-ip"
 }
 
-resource "google_compute_disk" "consul_additional" {
-  name  = "consul-additional"
+resource "google_compute_disk" "consul_server_additional" {
+  name  = "consul-server-additional"
   type  = "pd-ssd"
 }
 
-resource "google_compute_instance" "consul" {
-  name                      = "consul"
+resource "google_compute_instance" "consul-server" {
+  name                      = "consul-server"
   machine_type              = "n1-standard-2"
 
   boot_disk {
@@ -44,8 +44,8 @@ resource "google_compute_instance" "consul" {
   }
 
   attached_disk {
-    source = google_compute_disk.consul_additional.name
-    device_name = "consul-additional"
+    source = google_compute_disk.consul_server_additional.name
+    device_name = "consul-server-additional"
   }
 
   service_account {
@@ -61,11 +61,11 @@ resource "google_compute_instance" "consul" {
     network = "default"
 
     access_config {
-      nat_ip = google_compute_address.consul_static_ip.address
+      nat_ip = google_compute_address.consul_server_static_ip.address
     }
   }
 
-  tags = ["consul"]
+  tags = ["consul-server"]
 
-  metadata_startup_script = file("${path.module}/startup/startup-consul.sh")
+  metadata_startup_script = file("${path.module}/startup/startup-consul-server.sh")
 }

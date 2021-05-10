@@ -2,7 +2,7 @@
 
 set -ex
 
-ROOT_FOLDER=/mnt/consul
+ROOT_FOLDER=/mnt/consul-server
 sudo mkdir -p $ROOT_FOLDER
 sudo mkdir -p $ROOT_FOLDER/data
 
@@ -16,7 +16,7 @@ sudo mv uk-server-consul-0-key.pem $ROOT_FOLDER/uk-server-consul-0-key.pem
 
 cat > $ROOT_FOLDER/consul.hcl << EOF
 datacenter = "uk"
-data_dir = "$ROOT_FOLDER/consul/data"
+data_dir = "$ROOT_FOLDER/data"
 encrypt = "$(cat $ROOT_FOLDER/encryption_key)"
 ca_file = "$ROOT_FOLDER/consul-agent-ca.pem"
 cert_file = "$ROOT_FOLDER/uk-server-consul-0.pem"
@@ -41,38 +41,38 @@ client_addr = "0.0.0.0"
 ui = true
 EOF
 
-cat > /usr/bin/format-consul-additional.sh << EOF
+cat > /usr/bin/format-consul-server-additional.sh << EOF
 #!/usr/bin/env bash
-FS_TYPE=$(blkid -o value -s TYPE /dev/disk/by-id/google-consul-additional)
-[ -z "$FS_TYPE" ] && sudo mkfs.ext4 /dev/disk/by-id/google-consul-additional || true
+FS_TYPE=$(blkid -o value -s TYPE /dev/disk/by-id/google-consul-server-additional)
+[ -z "$FS_TYPE" ] && sudo mkfs.ext4 /dev/disk/by-id/google-consul-server-additional || true
 EOF
 
-cat > /etc/systemd/system/format-consul-additional.service << EOF
+cat > /etc/systemd/system/format-consul-server-additional.service << EOF
 [Unit]
-Description=Format consul additional disk
-After=/dev/disk/by-id/google-consul-additional
-Requires=/dev/disk/by-id/google-consul-additional
+Description=Format consul server additional disk
+After=/dev/disk/by-id/google-consul-server-additional
+Requires=/dev/disk/by-id/google-consul-server-additional
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/bin/bash /usr/bin/format-consul-additional.sh
+ExecStart=/bin/bash /usr/bin/format-consul-server-additional.sh
 EOF
 
 MOUNT_SCRIPT=$(systemd-escape -p --suffix=mount $ROOT_FOLDER/data)
 cat > /etc/systemd/system/$MOUNT_SCRIPT << EOF
 [Unit]
-Description=Mount consul additional disk
-Requires=format-consul-additional.service
-After=format-consul-additional.service
+Description=Mount consul server additional disk
+Requires=format-consul-server-additional.service
+After=format-consul-server-additional.service
 [Mount]
-What=/dev/disk/by-id/google-consul-additional
+What=/dev/disk/by-id/google-consul-server-additional
 Where=$ROOT_FOLDER/data
 Type=ext4
 [Install]
 WantedBy=multi-user.target
 EOF
 
-cat > /etc/systemd/system/consul.service << EOF
+cat > /etc/systemd/system/consul-server.service << EOF
 [Unit]
 Description=Consul Server
 Wants=network.target
@@ -88,10 +88,10 @@ WantedBy=multi-user.target
 EOF
 
 sudo systemctl daemon-reload
-sudo systemctl enable format-consul-additional.service
+sudo systemctl enable format-consul-server-additional.service
 sudo systemctl enable $MOUNT_SCRIPT
-sudo systemctl enable consul.service
-sudo systemctl start consul.service
+sudo systemctl enable consul-server.service
+sudo systemctl start consul-server.service
 
 sleep 30s
 export CONSUL_CACERT=$ROOT_FOLDER/consul-agent-ca.pem
