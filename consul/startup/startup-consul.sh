@@ -92,3 +92,9 @@ sudo systemctl enable format-consul-additional.service
 sudo systemctl enable $MOUNT_SCRIPT
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
+
+sleep 30s
+export CONSUL_CACERT=$ROOT_FOLDER/consul-agent-ca.pem
+export CONSUL_CLIENT_CERT=$ROOT_FOLDER/uk-server-consul-0.pem
+export CONSUL_CLIENT_KEY=$ROOT_FOLDER/uk-server-consul-0-key.pem
+consul acl bootstrap | awk '/SecretID/ {print $2}' > $ROOT_FOLDER/token
