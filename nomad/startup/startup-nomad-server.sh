@@ -113,7 +113,7 @@ consul {
   address = "consul-server:8500"
   ca_file = "$ROOT_FOLDER/consul-ca.pem"
   token   = "$(cat $ROOT_FOLDER/consul-token)"
-  server_service_name = "nomad"
+  server_service_name = "nomad-server"
   client_service_name = "nomad-client"
   auto_advertise      = true
   server_auto_join    = true
