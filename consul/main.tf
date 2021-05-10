@@ -17,7 +17,7 @@ resource "google_compute_firewall" "consul_api_firewall" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8200"]
+    ports    = ["8300"]
   }
 
   target_tags = ["consul"]
@@ -38,7 +38,7 @@ resource "google_compute_instance" "consul" {
 
   boot_disk {
     initialize_params {
-      image = "vaticle-web-prod/consul-2c045b5b75bda2d726274cdbca3d4967708209b2"
+      image = "vaticle-web-prod/consul-1591ddda0e08f7d26a1351ced111695732327ce0"
     }
     device_name = "boot"
   }

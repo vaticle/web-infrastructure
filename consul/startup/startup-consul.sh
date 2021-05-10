@@ -6,7 +6,39 @@ ROOT_FOLDER=/mnt/consul
 sudo mkdir -p $ROOT_FOLDER
 sudo mkdir -p $ROOT_FOLDER/data
 
-cat > $ROOT_FOLDER/config.hcl << EOF
+consul keygen > $ROOT_FOLDER/encryption_key
+consul tls ca create
+sudo mv consul-agent-ca.pem $ROOT_FOLDER/consul-agent-ca.pem
+sudo mv consul-agent-ca-key.pem $ROOT_FOLDER/consul-agent-ca-key.pem
+consul tls cert create -server -dc uk
+sudo mv uk-server-consul-0.pem $ROOT_FOLDER/uk-server-consul-0.pem
+sudo mv uk-server-consul-0-key.pem $ROOT_FOLDER/uk-server-consul-0-key.pem
+
+cat > $ROOT_FOLDER/consul.hcl << EOF
+datacenter = "uk"
+data_dir = "$ROOT_FOLDER/consul/data"
+encrypt = "$(cat $ROOT_FOLDER/encryption_key)"
+ca_file = "$ROOT_FOLDER/consul-agent-ca.pem"
+cert_file = "$ROOT_FOLDER/dc1-server-consul-0.pem"
+key_file = "$ROOT_FOLDER/dc1-server-consul-0-key.pem"
+verify_incoming = true
+verify_outgoing = true
+verify_server_hostname = true
+acl = {
+  enabled = true
+  default_policy = "allow"
+  enable_token_persistence = true
+}
+performance {
+  raft_multiplier = 1
+}
+EOF
+
+cat > $ROOT_FOLDER/server.hcl << EOF
+server = true
+bootstrap_expect = 1
+client_addr = "0.0.0.0"
+ui = true
 EOF
 
 cat > /usr/bin/format-consul-additional.sh << EOF
@@ -42,13 +74,13 @@ EOF
 
 cat > /etc/systemd/system/consul.service << EOF
 [Unit]
-Description=Nomad Server
+Description=Consul Server
 Wants=network.target
 Requires=network-online.target $MOUNT_SCRIPT
 After=network-online.target $MOUNT_SCRIPT
 [Service]
 Type=simple
-ExecStart=sudo consul server -config=$ROOT_FOLDER/config.hcl
+ExecStart=sudo consul agent -config-dir=$ROOT_FOLDER
 Restart=on-failure
 RestartSec=10
 [Install]
