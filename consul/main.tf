@@ -11,16 +11,16 @@ provider "google" {
   zone    = "europe-west2-b"
 }
 
-resource "google_compute_firewall" "consul_server_api_firewall" {
-  name    = "consul-server-api-firewall"
+resource "google_compute_firewall" "consul_server_firewall" {
+  name    = "consul-server-firewall"
   network = "default"
 
   allow {
     protocol = "tcp"
-    ports    = ["8300"]
+    ports    = ["8500", "8600"]
   }
 
-  target_tags = ["consul-server"]
+  target_tags = ["consul-server", "consul-client"]
 }
 
 resource "google_compute_address" "consul_server_static_ip" {
