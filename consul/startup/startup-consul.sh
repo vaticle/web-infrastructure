@@ -8,9 +8,9 @@ sudo mkdir -p $ROOT_FOLDER/data
 
 consul keygen > $ROOT_FOLDER/encryption_key
 consul tls ca create
+consul tls cert create -server -dc uk
 sudo mv consul-agent-ca.pem $ROOT_FOLDER/consul-agent-ca.pem
 sudo mv consul-agent-ca-key.pem $ROOT_FOLDER/consul-agent-ca-key.pem
-consul tls cert create -server -dc uk
 sudo mv uk-server-consul-0.pem $ROOT_FOLDER/uk-server-consul-0.pem
 sudo mv uk-server-consul-0-key.pem $ROOT_FOLDER/uk-server-consul-0-key.pem
 
