@@ -6,38 +6,6 @@ ROOT_FOLDER=/mnt/nomad-server
 sudo mkdir -p $ROOT_FOLDER
 sudo mkdir -p $ROOT_FOLDER/data
 
-cat > $ROOT_FOLDER/config.hcl << EOF
-region = "uk"
-datacenter = "uk"
-
-data_dir = "$ROOT_FOLDER/data"
-bind_addr = "0.0.0.0"
-
-server {
-  enabled = true
-  bootstrap_expect = 1
-}
-
-acl {
-  enabled = true
-}
-
-tls {
-  http = true
-  rpc  = true
-
-  ca_file   = "$ROOT_FOLDER/nomad-ca.pem"
-  cert_file = "$ROOT_FOLDER/nomad-server.pem"
-  key_file  = "$ROOT_FOLDER/nomad-server-key.pem"
-}
-
-vault {
-  enabled = true
-  address = "https://vault:8200"
-  ca_file = "$ROOT_FOLDER/vault-ca.pem"
-}
-EOF
-
 cat > /usr/bin/format-nomad-server-additional.sh << EOF
 #!/usr/bin/env bash
 FS_TYPE=$(blkid -o value -s TYPE /dev/disk/by-id/google-nomad-server-additional)
@@ -92,6 +60,9 @@ export VAULT_TOKEN=$(cat $ROOT_FOLDER/vault-token)
 vault kv get -format=json nomad/nomad-ca | jq -r '.data.value' | sudo tee "$ROOT_FOLDER/nomad-ca.pem" >/dev/null
 vault kv get -format=json nomad/nomad-ca-key | jq -r '.data.value' | sudo tee "$ROOT_FOLDER/nomad-ca-key.pem" >/dev/null
 
+gcloud compute scp --zone=europe-west2-b consul-server:/mnt/consul-server/consul-agent-ca.pem $ROOT_FOLDER/consul-ca.pem >/dev/null 2>&1
+gcloud compute scp --zone=europe-west2-b consul-server:/mnt/consul-server/token $ROOT_FOLDER/consul-token >/dev/null 2>&1
+
 cat > cfssl.json << EOF
 {
   "signing": {
@@ -106,6 +77,49 @@ echo '{}' | cfssl gencert -ca=$ROOT_FOLDER/nomad-ca.pem -ca-key=$ROOT_FOLDER/nom
     -config=cfssl.json -hostname="server.uk.nomad,localhost,127.0.0.1" - | cfssljson -bare nomad-server
 sudo mv nomad-server.pem $ROOT_FOLDER/nomad-server.pem
 sudo mv nomad-server-key.pem $ROOT_FOLDER/nomad-server-key.pem
+
+cat > $ROOT_FOLDER/config.hcl << EOF
+region = "uk"
+datacenter = "uk"
+
+data_dir = "$ROOT_FOLDER/data"
+bind_addr = "0.0.0.0"
+
+server {
+  enabled = true
+  bootstrap_expect = 1
+}
+
+acl {
+  enabled = true
+}
+
+tls {
+  http = true
+  rpc  = true
+
+  ca_file   = "$ROOT_FOLDER/nomad-ca.pem"
+  cert_file = "$ROOT_FOLDER/nomad-server.pem"
+  key_file  = "$ROOT_FOLDER/nomad-server-key.pem"
+}
+
+vault {
+  enabled = true
+  address = "https://vault:8200"
+  ca_file = "$ROOT_FOLDER/vault-ca.pem"
+}
+
+consul {
+  address = "consul-server:8500"
+  ca_file = "$ROOT_FOLDER/consul-ca.pem"
+  token   = "$(cat $ROOT_FOLDER/consul-token)"
+  server_service_name = "nomad"
+  client_service_name = "nomad-client"
+  auto_advertise      = true
+  server_auto_join    = true
+  client_auto_join    = true
+}
+EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable format-nomad-server-additional.service
