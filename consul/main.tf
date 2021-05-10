@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket  = "vaticle-web-prod-terraform-state"
-    prefix  = "terraform/consul/server"
+    prefix  = "terraform/consul"
   }
 }
 
