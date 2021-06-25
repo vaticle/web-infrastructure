@@ -36,7 +36,7 @@ eval $(./authenticate-vault.sh)
 
 Nomad runs contained applications on top. It contains one or more nomad server, and arbitrary number of nomad clients. The vault setup process will automatically populate the credentials that a nomad cluster needs to run, so no extra manual steps are needed for setting up nomad credentials.  We only need to deploy Nomad server if it doesn't already exist (in the cloud) or upgrade.
 
-Note that there's also a GUI interface that would be useful for monitor the nomad jobs. Please refer to the authentication nomad section below to gain access to the GUI.
+Note that there's also a GUI interface that would be useful for monitor the nomad jobs. Please refer to the authentication nomad section below to gain access to the GUI. After authentication locally, there will be a `NOMAD_ADDR` environment variable which has the IP address of the nomad machine.
 
 #### Deployment
 
