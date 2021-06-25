@@ -6,7 +6,7 @@ This repository has two modules `vault` and `nomad`.
 
 ### Vault
 
-Vault is used for storing passwords, ssl certificates and so on. This is used across the entire web arena including the nomad infrastructure, so it must be set up prior to everything. We only need to deploy Vault if it doesn't already exist (in the cloud) or upgrade.
+Vault is used for storing passwords, ssl certificates and so on. This is used across the entire web arena including the nomad infrastructure, so it must be set up prior to everything. We only need to deploy Vault if it doesn't already exist (in the cloud) or we need to upgrade.
 
 #### Deployment
 
