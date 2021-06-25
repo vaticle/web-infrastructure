@@ -2,11 +2,11 @@
 
 This repository has two modules `vault` and `nomad`.
 
-**NOTE:** All the following code assumes you have GCP credentials set up in your shell. To set up the credential, export `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your GCP credential file.
+**NOTE:** All the following code assumes you have GCP credentials set up in your shell. To set up the credential, export `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your GCP credential file. Please access the GCP console [here](https://console.cloud.google.com/), and the project name is `vaticle-web-prod`.
 
 ### Vault
 
-Vault is used for storing passwords, ssl certificates and so on. This is used across the entire web arena including the nomad infrastructure, so it must be set up prior to everything.
+Vault is used for storing passwords, ssl certificates and so on. This is used across the entire web arena including the nomad infrastructure, so it must be set up prior to everything. We only need to deploy Vault if it doesn't already exist (in the cloud) or upgrade.
 
 #### Deployment
 
@@ -34,7 +34,9 @@ eval $(./authenticate-vault.sh)
 
 ### Nomad
 
-Nomad runs contained applications on top. It contains one or more nomad server, and arbitrary number of nomad clients. The vault setup process will automatically populate the credentials that a nomad cluster needs to run, so no extra manual steps are needed for setting up nomad credentials.
+Nomad runs contained applications on top. It contains one or more nomad server, and arbitrary number of nomad clients. The vault setup process will automatically populate the credentials that a nomad cluster needs to run, so no extra manual steps are needed for setting up nomad credentials.  We only need to deploy Nomad server if it doesn't already exist (in the cloud) or upgrade.
+
+Note that there's also a GUI interface that would be useful for monitor the nomad jobs. Please refer to the authentication nomad section below to gain access to the GUI.
 
 #### Deployment
 
