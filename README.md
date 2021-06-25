@@ -32,6 +32,12 @@ To be able to authenticate with the vault server and call vault commands locally
 eval $(./authenticate-vault.sh)
 ```
 
+To ssh into the machine, install the `gcloud` CLI and use the following command.
+
+```
+gcloud ssh vault
+```
+
 ### Nomad
 
 Nomad runs contained applications on top. It contains one or more nomad server, and arbitrary number of nomad clients. The vault setup process will automatically populate the credentials that a nomad cluster needs to run, so no extra manual steps are needed for setting up nomad credentials.  We only need to deploy Nomad server if it doesn't already exist (in the cloud) or we need to upgrade.
@@ -61,4 +67,10 @@ To be able to authenticate with the nomad server and call nomad commands locally
 
 ```
 eval $(./authenticate-nomad.sh)
+```
+
+To ssh into the machine, install the `gcloud` CLI and use the following command.
+
+```
+gcloud ssh nomad-server
 ```
