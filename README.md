@@ -38,6 +38,12 @@ To ssh into the machine, install the `gcloud` CLI and use the following command.
 gcloud ssh vault
 ```
 
+To start & restart the server, please ssh into the machine and run the following command.
+
+```
+systemctl restart vault
+```
+
 ### Nomad
 
 Nomad runs contained applications on top. It contains one or more nomad server, and arbitrary number of nomad clients. The vault setup process will automatically populate the credentials that a nomad cluster needs to run, so no extra manual steps are needed for setting up nomad credentials.  We only need to deploy Nomad server if it doesn't already exist (in the cloud) or we need to upgrade.
@@ -73,4 +79,10 @@ To ssh into the machine, install the `gcloud` CLI and use the following command.
 
 ```
 gcloud ssh nomad-server
+```
+
+To start & restart the server, please ssh into the machine and run the following command.
+
+```
+systemctl restart nomad-server
 ```
