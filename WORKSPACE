@@ -1,10 +1,10 @@
-workspace(name = "graknlabs_web_infrastructure")
+workspace(name = "vaticle_web_infrastructure")
 
 ################################
 # Load @vaticle_dependencies #
 ################################
 
-load("//dependencies/graknlabs:repositories.bzl", "vaticle_dependencies")
+load("//dependencies/vaticle:repositories.bzl", "vaticle_dependencies")
 vaticle_dependencies()
 
 # Load //builder/java
