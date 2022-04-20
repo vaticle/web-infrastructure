@@ -1,5 +1,5 @@
-load("@graknlabs_bazel_distribution//packer:rules.bzl", "deploy_packer")
-load("@graknlabs_bazel_distribution//gcp:rules.bzl", "assemble_gcp")
+load("@vaticle_bazel_distribution//packer:rules.bzl", "deploy_packer")
+load("@vaticle_bazel_distribution//gcp:rules.bzl", "assemble_gcp")
 
 assemble_gcp(
     name = "assemble-gcp-vault",
